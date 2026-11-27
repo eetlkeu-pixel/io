@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>F1 더 무비 시청 방법 손익비</title>
-<meta name="description" content="모임 전에 『F1 더 무비』를 볼 수 있는 여러 방법을 비용·확실성·리스크·관계 부담으로 비교한 페이지">
+<title>F1 더 무비 시청 전략</title>
+<meta name="description" content="모임 전에 『F1 더 무비』를 어떻게 볼지 고르는 문제를 각자의 가치관에 따라 다른 답이 나오는 토론 재료로 정리한 페이지">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -20,62 +20,77 @@ a{color:var(--blue)}
 .top{background:var(--track);color:#fff;padding-bottom:0}
 .eyebrow{font:700 13px/1 "Titillium Web",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#ff4d40;margin:0 0 12px}
 h1{font:900 clamp(30px,4.6vw,50px)/1.12 "Titillium Web","Noto Sans KR",sans-serif;letter-spacing:-.02em;margin:0;text-wrap:balance}
-.lede{margin:14px 0 0;font-size:17px;color:#d6d6e0;max-width:62ch}
+.lede{margin:14px 0 0;font-size:17px;color:#d6d6e0;max-width:64ch}
 .kerb{height:10px;margin-top:32px;background:repeating-linear-gradient(90deg,#e10600 0 28px,#fff 28px 56px)}
 h2{font:700 clamp(22px,2.6vw,30px)/1.25 "Titillium Web","Noto Sans KR",sans-serif;margin:0 0 6px;letter-spacing:-.01em}
-.sub{color:var(--mute);margin:0 0 20px;font-size:15px}
-.verdict{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.v{border:1px solid var(--line);border-top:4px solid var(--blue);background:var(--panel);padding:16px 18px;border-radius:4px}
-.v.alt{border-top-color:var(--green)}.v.no{border-top-color:var(--red)}
-.v .n{font:900 28px/1 "Titillium Web",sans-serif;color:var(--mute)}
-.v h3{margin:6px 0 4px;font-size:17px}
-.v p{margin:0;font-size:15px;color:var(--mute)}
-.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
-table{border-collapse:collapse;width:100%;min-width:760px;font-size:14.5px}
-th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
-thead th{background:var(--panel);font-size:13px;color:var(--mute);font-weight:700;white-space:nowrap}
-tbody tr:last-child td{border-bottom:0}
-td.name{font-weight:700;white-space:nowrap}
-.won{font:700 15px "Titillium Web",sans-serif;white-space:nowrap}
-.dots{white-space:nowrap;letter-spacing:2px}
-.dots i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--line);margin-right:1px}
-.good i.on{background:var(--green)}.bad i.on{background:var(--red)}
+.sub{color:var(--mute);margin:0 0 20px;font-size:15px;max-width:72ch}
 .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap;border:1px solid currentColor}
 .t1{color:var(--green)}.t2{color:var(--amber)}.t3{color:var(--red)}
-.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:12px 0 0;font-size:13px;color:var(--mute)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:14px 16px;font-size:15px}
+.fact b{display:block;font:900 22px/1.2 "Titillium Web","Noto Sans KR",sans-serif;margin-bottom:4px}
+/* 가치관 저울 */
+.lab{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:24px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:18px 20px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.presets button{font:600 14px "Noto Sans KR",sans-serif;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.presets button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.presets button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.sl{margin:0 0 12px}
+.sl label{display:flex;justify-content:space-between;font-size:14.5px;font-weight:500}
+.sl label span{color:var(--mute);font-weight:400;font-size:13px}
+.sl input{width:100%;accent-color:var(--red)}
+.pdesc{font-size:14px;color:var(--mute);margin:4px 0 0;min-height:3em}
+.rank{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rank li{display:grid;grid-template-columns:28px minmax(0,1fr) 56px;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--bg);transition:transform .2s}
+.rank li.first{border-color:var(--red);box-shadow:inset 4px 0 0 var(--red)}
+.rank .pos{font:900 20px/1 "Titillium Web",sans-serif;color:var(--mute)}
+.rank .nm{font-weight:700;font-size:15px}
+.rank .bar{height:6px;background:var(--line);border-radius:3px;margin-top:6px;overflow:hidden}
+.rank .bar i{display:block;height:100%;background:var(--blue)}
+.rank li.first .bar i{background:var(--red)}
+.rank .sc{font:700 17px "Titillium Web",sans-serif;text-align:right}
+/* 카드 */
 .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.card{border:1px solid var(--line);border-radius:4px;padding:18px 20px;background:var(--bg)}
+.card{border:1px solid var(--line);border-radius:4px;padding:18px 20px}
 .card h3{margin:0 0 2px;font-size:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .card .cost{font:700 14px "Titillium Web","Noto Sans KR",sans-serif;color:var(--mute);margin:0 0 10px}
-.card ul{margin:0;padding-left:1.1em}
-.card li{margin:2px 0;font-size:15px}
-.card li b.p{color:var(--green)}.card li b.m{color:var(--red)}
-.card .bottom{margin:10px 0 0;padding-top:10px;border-top:1px dashed var(--line);font-size:14.5px}
-.math{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
-.calc{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:18px 20px}
+.card dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;font-size:14.5px}
+.card dt{font-weight:700;color:var(--mute);white-space:nowrap}
+.card dd{margin:0}
+.card .q{margin:12px 0 0;padding:10px 12px;background:var(--panel);border-radius:4px;font-size:14.5px}
+.card .q::before{content:"토론 거리 · ";font-weight:700;color:var(--red)}
+/* 디피 렌즈 */
+.dp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.steps li{counter-increment:s;position:relative;padding:12px 14px 12px 48px;border:1px solid var(--line);border-radius:4px;font-size:15px}
+.steps li::before{content:counter(s);position:absolute;left:14px;top:10px;font:900 22px/1 "Titillium Web",sans-serif;color:var(--red)}
 .calc label{display:block;font-size:14px;color:var(--mute);margin:0 0 6px}
 .calc input[type=range]{width:100%;accent-color:var(--red)}
 .row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);font-size:15px}
-.row:last-child{border-bottom:0}
 .row b{font-family:"Titillium Web",sans-serif;font-size:17px}
 .big{font:900 clamp(30px,4vw,44px)/1 "Titillium Web",sans-serif;color:var(--red)}
-.stance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.st{padding:16px 18px;border-right:1px solid var(--line)}
-.st:last-child{border-right:0}
-.st q{display:block;font-weight:700;font-size:16px;margin:6px 0 8px;quotes:"‘" "’"}
-.st p{margin:0;font-size:14.5px;color:var(--mute)}
+/* 토론 */
+.qs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.qq{border-top:4px solid var(--ink);padding:14px 0 0}
+.qq .k{font:900 13px/1 "Titillium Web",sans-serif;letter-spacing:.1em;color:var(--red)}
+.qq h3{margin:6px 0 8px;font-size:17px;line-height:1.45}
+.qq ul{margin:0;padding-left:1.1em;font-size:14.5px;color:var(--mute)}
+.qq li{margin:4px 0}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.rules span{border:1px dashed var(--line);border-radius:999px;padding:6px 12px;font-size:14px}
 .note{font-size:13.5px;color:var(--mute);margin-top:16px}
 footer{border-top:1px solid var(--line)}
-@media (max-width:820px){.verdict,.cards,.math,.stance{grid-template-columns:minmax(0,1fr)}.st{border-right:0;border-bottom:1px solid var(--line)}.st:last-child{border-bottom:0}}
+@media (max-width:820px){.facts,.lab,.cards,.dp,.qs{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
 
 <header class="band top">
   <div class="wrap">
-    <p class="eyebrow">Pit Wall · 시청 전략 브리핑</p>
-    <h1>모임 전에 『F1 더 무비』 보기: 방법별 손익비</h1>
-    <p class="lede">공식 스트리밍이 일부 기기에서 재생되지 않는다는 이야기가 돌고, 모임은 바로 다음 주입니다. 떠오르는 방법은 많은데 비용, 이번 주 안에 볼 수 있는지, 법적·약관 리스크, 잘 모르는 멤버에게 먼저 말을 거는 부담까지 따지면 손익비가 다 다릅니다.</p>
+    <p class="eyebrow">Pit Wall · 첫 모임 사전 브리핑</p>
+    <h1>목표는 ‘모임 전에 영화 보기’, 우리는 어디까지 룰을 어겨도 괜찮을까?</h1>
+    <p class="lede">공식 스트리밍이 일부 기기에서 재생되지 않고, 모임은 다음 주이고, 멤버끼리는 아직 서먹합니다. 영화를 어떻게 볼지 고르는 일이 그대로 이번 모임 질문의 축소판입니다. 이 페이지는 정답을 정하지 않습니다. 같은 사실을 놓고도 무엇을 중요하게 여기느냐에 따라 사람마다 다른 선택이 나온다는 걸 보여 주고, 그 차이를 토론 재료로 씁니다.</p>
     <div class="kerb" aria-hidden="true"></div>
   </div>
 </header>
@@ -83,126 +98,150 @@ footer{border-top:1px solid var(--line)}
 <main>
 <section class="band">
   <div class="wrap">
-    <h2>결론부터</h2>
-    <p class="sub">공유해서 아낄 수 있는 돈은 한 사람당 몇천 원 수준입니다. 그 정도로는 공유에 드는 수고와 리스크를 감당할 이유가 약합니다.</p>
-    <div class="verdict">
-      <div class="v"><div class="n">1</div><h3>Apple TV 구독을 다른 기기에서 다시 시도</h3><p>재생이 안 되는 건 일부 앱·브라우저 이야기입니다. LG 스탠바이미 같은 TV 앱에서는 된다는 사례가 있으니 가진 기기를 하나씩 바꿔 봅니다. 신규 무료 체험이 남아 있으면 0원입니다.</p></div>
-      <div class="v alt"><div class="n">2</div><h3>안 되면 각자 대여·구매</h3><p>1만 원 안팎이면 오늘 밤 바로 볼 수 있습니다. 누구와 조율할 필요가 없어서 가장 확실한 방법입니다.</p></div>
-      <div class="v no"><div class="n">✕</div><h3>계정 공유·불법 공유는 하지 않기</h3><p>몇천 원 아끼자고 약관 위반, 개인정보 노출, 저작권 리스크를 떠안는 셈입니다. 손익비가 가장 나쁩니다.</p></div>
+    <h2>모두가 같은 출발선: 사실관계</h2>
+    <p class="sub">여기까지는 가치관과 상관없는 사실입니다. 확인하지 못한 부분은 그렇다고 적었습니다.</p>
+    <div class="facts">
+      <div class="fact"><b>공식 스트리밍 있음</b>국내 Apple TV 구독으로 볼 수 있습니다(2025년 12월 공개). 다만 iOS, 일부 브라우저, Apple TV 앱에서 재생 오류가 보고됐고, LG 스탠바이미 같은 TV 앱에서는 됐다는 사례가 있습니다.</div>
+      <div class="fact"><b>개별 구매 1만 원 안팎</b>Apple TV 스토어에서 디지털로 사거나 빌릴 수 있습니다. 1만 1천 원에 샀다는 사용자 글이 있지만 공식 가격은 아닙니다. 구글 플레이 판매 여부는 확인하지 못했습니다.</div>
+      <div class="fact"><b>실물 디스크는 해외만</b>미국(2025년 10월)과 일본(2025년 11월)에서 블루레이·DVD가 나왔습니다. 국내 정식 발매는 확인하지 못했습니다. 직구하면 배송에 1~2주 이상 걸립니다.</div>
     </div>
   </div>
 </section>
 
 <section class="band" style="padding-top:0">
   <div class="wrap">
-    <h2>한눈에 비교</h2>
-    <p class="sub">점이 많을수록 그 항목의 정도가 큽니다. 초록 점은 좋은 쪽, 빨간 점은 나쁜 쪽입니다. 비용은 2명이 나눈다고 가정한 1인 기준이고, 가격은 대략적인 값입니다.</p>
-    <div class="tbl">
-      <table>
-        <thead><tr><th>방법</th><th>1인 비용</th><th>이번 주 안에 볼 확률</th><th>법·약관 리스크</th><th>관계 부담</th><th>입장</th></tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-    <div class="legend">
-      <span><span class="tag t1">규정 준수</span> 규정을 반드시 지킨다</span>
-      <span><span class="tag t2">빈틈 활용</span> 어기지는 않되 최대한 활용한다</span>
-      <span><span class="tag t3">선 넘음</span> 이길 수 있다면 어겨도 된다</span>
+    <h2>가치관 저울: 무엇에 무게를 두면 무엇이 1등이 되나</h2>
+    <p class="sub">모임의 첫 질문에 나오는 세 입장을 프리셋으로 넣었습니다. 프리셋을 고르거나 슬라이더를 직접 움직여 보세요. 각 방법의 점수(0~5)는 제가 매긴 값이라 그 자체로 반박할 수 있습니다. ‘이 방법이 규정 점수 3이라고? 나는 1로 본다’ 같은 반박도 토론 거리입니다.</p>
+    <div class="lab">
+      <div class="panel">
+        <div class="presets" role="group" aria-label="입장 프리셋" id="presets"></div>
+        <div id="sliders"></div>
+        <p class="pdesc" id="pdesc"></p>
+      </div>
+      <div>
+        <ol class="rank" id="rank" aria-live="polite"></ol>
+        <p class="note">점수 = Σ(가중치 × 방법 점수)를 최댓값 대비 백분율로 나타냈습니다.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="band" style="padding-top:0">
   <div class="wrap">
-    <h2>방법별 상세</h2>
-    <p class="sub">얻는 것과 잃는 것을 나란히 놓았습니다.</p>
+    <h2>방법별 카드</h2>
+    <p class="sub">얻는 것, 잃는 것, 최악의 경우를 나란히 적었습니다. 어느 쪽이 더 무거운지는 읽는 사람이 판단합니다.</p>
     <div class="cards" id="cards"></div>
   </div>
 </section>
 
 <section class="band" style="padding-top:0">
-  <div class="wrap math">
+  <div class="wrap dp">
     <div>
-      <h2>공유로 실제로 아끼는 돈</h2>
-      <p class="sub" style="margin-bottom:12px">공유를 하면 1인 비용은 내려가지만 그만큼 할 일과 리스크가 늘어납니다.</p>
-      <ul style="margin:0;padding-left:1.1em;font-size:15px">
-        <li>잘 모르는 멤버에게 먼저 연락해서 제안하기</li>
-        <li>누가 결제할지, 돈을 어떻게 보낼지 정하기</li>
-        <li>계정 비밀번호나 가족 그룹 같은 개인 정보를 넘기거나 받기</li>
-        <li>상대가 이미 따로 샀을 수도 있다는 변수</li>
-      </ul>
-      <p class="note">가격을 바꿔 넣어 보세요. 실제 가격은 스토어마다, 시점마다 다릅니다.</p>
+      <h2>투자자의 렌즈로 보면: 디피식 하방 계산</h2>
+      <p class="sub">벤처캐피털 심사역 출신 전업투자자 디피는 2022년 유튜브 채널 ‘신사임당’을 20억 원에 인수하면서 판단 근거를 공개했습니다. 월 순이익을 약 1억 3천만 원으로 잡으면 15개월이면 원금을 회수합니다. 가장 큰 리스크로는 기존 진행자의 이탈을 꼽았고, 매출이 절반이나 3분의 1로 줄어도 2~3년이면 회수된다고 봤습니다. <b>잘 풀릴 때의 이득보다 잘못될 때 얼마나 버틸 수 있는지를 먼저 계산한 셈입니다.</b></p>
+      <p class="sub">같은 순서로 시청 방법을 따져 볼 수 있습니다.</p>
+      <ol class="steps">
+        <li><b>회수 계산:</b> 공유로 아끼는 돈이 정확히 얼마인가? (오른쪽 계산기)</li>
+        <li><b>가장 큰 리스크:</b> 이 방법에서 ‘진행자 이탈’에 해당하는 사건은 무엇인가? (카드의 ‘최악’ 줄)</li>
+        <li><b>하방 시나리오:</b> 그 일이 터져도 감당할 수 있는가, 그리고 그때 잃는 것은 돈인가, 시간인가, 평판인가?</li>
+      </ol>
+      <p class="note">디피의 계산은 2022년 인터뷰 보도를 근거로 했습니다. 이 페이지는 그 계산 방식을 빌린 것일 뿐, 디피가 이 문제에 대해 직접 의견을 낸 것은 아닙니다. 같은 렌즈를 써도 결론은 사람마다 갈립니다. 1만 원의 하방을 가볍게 보는 사람도 있고, 서먹한 멤버에게 먼저 말 거는 일을 큰 비용으로 보는 사람도 있습니다.</p>
     </div>
-    <div class="calc">
-      <label for="price">디지털 구매·대여 가격: <b id="pv">11,000</b>원</label>
+    <div class="panel calc">
+      <label for="price">디지털 구매·대여 가격: <b id="pv"></b>원</label>
       <input id="price" type="range" min="3000" max="25000" step="500" value="11000">
-      <label for="ppl" style="margin-top:12px">나눌 인원: <b id="nv">2</b>명</label>
+      <label for="ppl" style="margin-top:12px">나눌 인원: <b id="nv"></b>명</label>
       <input id="ppl" type="range" min="2" max="6" step="1" value="2">
       <div style="margin-top:14px">
         <div class="row"><span>혼자 살 때</span><b id="solo"></b></div>
-        <div class="row"><span>나눌 때 1인 부담</span><b id="share"></b></div>
+        <div class="row" style="border-bottom:0"><span>나눌 때 1인 부담</span><b id="share"></b></div>
       </div>
-      <p style="margin:14px 0 0;font-size:14px;color:var(--mute)">한 사람당 아끼는 돈</p>
+      <p style="margin:14px 0 0;font-size:14px;color:var(--mute)">공유로 얻는 ‘업사이드’ (1인당)</p>
       <div class="big" id="save"></div>
-      <p style="margin:8px 0 0;font-size:14px;color:var(--mute)">위에 적은 수고와 리스크를 이 금액으로 감수할 만한지가 판단 기준입니다.</p>
+      <p style="margin:10px 0 0;font-size:14px;color:var(--mute)">이 금액을 각 카드의 ‘최악’ 줄과 맞대 보세요. 감수할 만하다고 느끼는 지점이 사람마다 다르다는 것이 이 페이지가 말하려는 바입니다.</p>
     </div>
   </div>
 </section>
 
 <section class="band" style="padding-top:0">
   <div class="wrap">
-    <h2>모임 주제로 다시 보기</h2>
-    <p class="sub">이번 모임의 질문은 “우리는 어디까지 룰을 어겨도 괜찮을까?”입니다. 어떻게 볼지 고르는 일 자체가 이 질문의 작은 연습 문제가 됩니다.</p>
-    <div class="stance">
-      <div class="st"><span class="tag t1">규정 준수</span><q>규정을 반드시 지킨다</q><p>각자 구독하거나 구매하기, 실물 디스크 빌려주기. 돈과 시간이 좀 들지만 나중에 신경 쓸 일이 없습니다.</p></div>
-      <div class="st"><span class="tag t2">빈틈 활용</span><q>어기지는 않되 최대한 활용한다</q><p>무료 체험 쓰기, 가족 공유 기능 쓰기. 기능 자체는 허용돼 있지만 ‘가족’이라는 취지를 어디까지 넓혀 볼지가 영화 속 소니가 서 있는 회색지대입니다.</p></div>
-      <div class="st"><span class="tag t3">선 넘음</span><q>이길 수 있다면 어겨도 된다</q><p>새 계정 만들어 공유하기, 불법 공유. 이번에 ‘이기면’ 얻는 건 몇천 원인데, 걸리면 잃는 쪽이 훨씬 큽니다. 비대칭이 분명한 판입니다.</p></div>
+    <h2>모임에서 나눌 질문으로 이어 가기</h2>
+    <p class="sub">모임의 ‘함께 나눌 질문’ 세 개에 이 페이지의 상황을 붙였습니다.</p>
+    <div class="qs">
+      <div class="qq"><div class="k">Q1 · 입장</div><h3>규정을 반드시 지킨다, 어기지 않되 최대한 활용한다, 이길 수 있다면 적당히 어겨도 된다. 나는 어디에 서 있나?</h3><ul><li>저울에서 내 프리셋을 고르면 1등이 무엇인가? 그 결과에 수긍이 가는가?</li><li>영화 시청에서 고른 입장과 일이나 투자에서 고르는 입장이 같은가, 다른가?</li></ul></div>
+      <div class="qq"><div class="k">Q2 · 선을 정하는 것</div><h3>영리한 전략과 반칙을 가르는 선은 규정이 정할까, 양심이 정할까, 주변의 시선이 정할까?</h3><ul><li>가족 공유 기능은 약관이 허용하는 기능이다. 그런데 거의 모르는 사람과 쓰면 반칙인가?</li><li>아무도 모른다면 하겠는가? 모임에서 밝혀야 한다면 달라지는가? 이 둘의 차이가 ‘시선’의 무게다.</li></ul></div>
+      <div class="qq"><div class="k">Q3 · 회색지대 경험</div><h3>룰의 회색지대를 활용해 이득을 본 적이 있나? 다시 돌아가도 같은 결정을 하겠나?</h3><ul><li>무료 체험만 쓰고 해지, 가족 요금제 나눠 쓰기처럼 일상에서 회색지대를 쓴 경험이 있는가?</li><li>소니는 규정의 빈틈을 이용했다. 디피는 하방이 제한된 거래를 골랐다. 둘은 같은 종류의 영리함인가?</li></ul></div>
     </div>
-    <p class="note">질문 3 “룰의 회색지대를 활용해 이득을 본 적이 있나요?”에 대한 가벼운 답으로 써도 좋습니다.</p>
+    <div class="rules" aria-label="트레바리 모임 수칙에서">
+      <span>독백이 아닌 대화</span><span>잘 설득하기보다 잘 설득당하기</span><span>비난과 인신공격 금지</span>
+    </div>
+    <p class="note">트레바리에서 모임 전에 함께 읽는 수칙 가운데 일부입니다. 서로 다른 선택을 두고 이야기할 때 특히 필요한 수칙들입니다.</p>
   </div>
 </section>
 </main>
 
 <footer class="band">
   <div class="wrap">
-    <p class="note" style="margin:0">정보 기준: 2026년 11월. 국내 Apple TV 스트리밍 공개(2025년 12월), Apple TV 스토어 디지털 판매, 해외 블루레이·DVD 발매(미국 2025년 10월, 일본 2025년 11월)는 보도로 확인했습니다. 국내 실물 디스크 정식 발매 여부, 구글 플레이 판매 여부와 가격, 티빙 등 다른 OTT의 제공 여부는 확인하지 못했으니 각 스토어에서 직접 확인하세요. 불법 공유는 비교를 위해 넣었을 뿐 권하지 않습니다.</p>
+    <p class="note" style="margin:0">정보 기준: 2026년 11월. 가격과 서비스 제공 여부는 바뀔 수 있으니 각 스토어에서 확인하세요. 저작권을 침해하는 공유는 비교 대상으로만 넣었고, 방법은 안내하지 않습니다.</p>
   </div>
 </footer>
 
 <script>
-const D=[
- {n:"Apple TV 구독 (기기 바꿔 재시도)",c:"0원~월 구독료",sure:3,risk:0,rel:0,s:1,
-  pro:["무료 체험이 남았으면 0원","보는 것 자체는 완전히 합법","TV 앱 등 다른 기기에서는 된다는 사례가 있음"],
-  con:["iOS, 일부 브라우저, Apple TV 앱에서 재생 오류가 보고됨","가진 기기가 전부 안 되면 시간만 날림"],
-  b:"가장 먼저 해 볼 방법입니다. 30분 안에 되는지 안 되는지 판가름 납니다."},
- {n:"각자 디지털 대여·구매",c:"약 1만 원",sure:5,risk:0,rel:0,s:1,
-  pro:["오늘 바로 볼 수 있음","누구와도 조율할 필요 없음","구매하면 모임 뒤에도 다시 볼 수 있음"],
-  con:["공유할 때보다 몇천 원 더 듦","스토어·기기 조합에 따라 재생 문제가 생길 수 있어 미리보기로 확인 권장"],
-  b:"가장 확실한 대비책입니다. 1번이 안 되면 고민할 것 없이 이쪽으로 갑니다."},
- {n:"다른 OTT 확인 (티빙 등)",c:"이미 구독 중이면 0원",sure:2,risk:0,rel:0,s:1,
-  pro:["이미 구독 중이면 추가 비용 없음"],
-  con:["제공 여부가 확실하지 않음(JustWatch 표시만 있음)","새로 구독하면 영화 한 편 값보다 비쌀 수 있음"],
-  b:"이미 구독하는 서비스가 있다면 검색 한 번 해 볼 가치는 있습니다."},
- {n:"구매 후 가족 공유 기능 사용",c:"약 5천 원",sure:3,risk:2,rel:4,s:2,
-  pro:["구글·애플 모두 공식 기능이라 계정 비밀번호를 넘기지 않아도 됨","구매 1건을 여럿이 볼 수 있음"],
-  con:["‘가족’ 그룹이 전제라 취지와 어긋남","가족 그룹에 들어가면 다른 그룹 이동에 제한이 생기고 결제 정보 관리가 얽힘","잘 모르는 사람을 내 가족 그룹에 넣어야 함"],
-  b:"규정의 빈틈을 이용하는 방법입니다. 얼마 안 아끼는데 신경 쓸 게 많습니다."},
- {n:"새 계정 만들어 구매 후 계정 공유",c:"약 5천 원 (계정 만드는 수고 별도)",sure:3,risk:3,rel:4,s:3,
-  pro:["내 주 계정은 노출되지 않음","기프트카드로 결제하면 카드 정보도 안 남음"],
-  con:["대부분의 서비스가 약관에서 계정 공유·양도를 금지함","새 기기 로그인으로 보안 확인이나 잠금이 걸릴 수 있음","계정을 만들고, 결제하고, 비밀번호를 전달하는 수고가 전부 내 몫"],
-  b:"작은 규정 위반입니다. 얻는 건 몇천 원인데 들어가는 수고가 가장 큽니다."},
- {n:"DVD·블루레이 사서 우편으로 공유",c:"2만~4만 원대 + 배송비 (추정)",sure:0,risk:0,rel:3,s:1,
-  pro:["실물 디스크를 빌려주는 건 합법","소장하는 의미가 있음"],
-  con:["국내 정식 발매가 확인되지 않아 해외 직구가 필요하고 배송에 1~2주 이상 걸림","플레이어와 지역 코드를 확인해야 함","주소를 주고받아야 하고 돌려받는 것도 일"],
-  b:"모임이 다음 주라서 시간 안에 받을 수 없습니다. 이번에는 해당이 없습니다."},
- {n:"불법 공유",c:"0원 (청구서는 나중에 옴)",sure:3,risk:5,rel:0,s:3,
-  pro:["돈이 들지 않음"],
-  con:["저작권법 위반. 토렌트처럼 받으면서 동시에 올리는 방식은 처벌 가능성이 더 큼","악성코드, 낮은 화질, 자막 문제","‘룰을 어디까지 어겨도 되나’를 이야기하는 모임에 이렇게 보고 가는 아이러니"],
-  b:"비교를 위해 넣었을 뿐 권하지 않습니다. 이 페이지에서 손익비가 가장 나쁜 방법입니다."}
+const DIM=[
+ {k:"money",n:"돈 아끼기",h:"싸게"},
+ {k:"sure",n:"확실성·시간",h:"이번 주 안에 확실히"},
+ {k:"rule",n:"규정·약관 준수",h:"규정이 선을 정한다"},
+ {k:"consc",n:"떳떳함",h:"양심이 선을 정한다"},
+ {k:"social",n:"관계·시선 부담 적음",h:"주변이 선을 정한다"},
+ {k:"down",n:"하방 안전",h:"최악이 감당 가능한가"}
 ];
-const dots=(v,cls)=>`<span class="dots ${cls}" aria-label="${v}/5">${[1,2,3,4,5].map(i=>`<i class="${i<=v?"on":""}"></i>`).join("")}</span>`;
-const tags={1:'<span class="tag t1">규정 준수</span>',2:'<span class="tag t2">빈틈 활용</span>',3:'<span class="tag t3">선 넘음</span>'};
-document.getElementById("rows").innerHTML=D.map(d=>`<tr><td class="name">${d.n}</td><td class="won">${d.c}</td><td>${dots(d.sure,"good")}</td><td>${dots(d.risk,"bad")}</td><td>${dots(d.rel,"bad")}</td><td>${tags[d.s]}</td></tr>`).join("");
-document.getElementById("cards").innerHTML=D.map(d=>`<article class="card"><h3>${d.n} ${tags[d.s]}</h3><p class="cost">1인 비용 · ${d.c}</p><ul>${d.pro.map(x=>`<li><b class="p">+</b> ${x}</li>`).join("")}${d.con.map(x=>`<li><b class="m">−</b> ${x}</li>`).join("")}</ul><p class="bottom">${d.b}</p></article>`).join("");
+const PRE=[
+ {n:"규정을 반드시 지킨다",w:{money:1,sure:3,rule:5,consc:4,social:3,down:3},d:"규정과 양심을 가장 무겁게 봅니다. 돈은 거의 신경 쓰지 않습니다."},
+ {n:"어기지는 않되 최대한 활용",w:{money:5,sure:2,rule:3,consc:2,social:1,down:2},d:"선을 넘지 않는 범위에서 비용을 최소화합니다. 무료 체험이나 가족 공유 같은 공식 기능의 빈틈을 적극적으로 씁니다."},
+ {n:"이길 수 있다면 어겨도 된다",w:{money:5,sure:4,rule:0,consc:0,social:1,down:0},d:"목표 달성(싸고 확실하게 보기)이 우선이고 규정은 비용 항목 중 하나입니다."},
+ {n:"디피식: 하방 먼저",w:{money:3,sure:4,rule:1,consc:1,social:3,down:5},d:"규정 자체보다 잘못됐을 때 무엇을 잃는지를 먼저 봅니다. 업사이드가 작으면 리스크도 작아야 한다고 봅니다."},
+ {n:"서먹한 사이가 제일 신경 쓰임",w:{money:2,sure:3,rule:2,consc:2,social:5,down:2},d:"돈이나 규정보다 잘 모르는 멤버에게 먼저 말을 걸어야 하는 상황이 가장 큰 비용입니다."}
+];
+const O=[
+ {n:"Apple TV 구독, 기기 바꿔 재시도",c:"0원(무료 체험) ~ 월 구독료",s:2,v:{money:4,sure:2,rule:5,consc:5,social:5,down:5},
+  g:"무료 체험이 남았으면 0원. 보는 것 자체는 완전히 합법",l:"가진 기기가 전부 재생 오류면 시간만 날림",w:"30분 허비, 해지를 잊으면 자동 결제",
+  q:"무료 체험만 쓰고 바로 해지하는 건 영리한 걸까, 얌체일까?"},
+ {n:"각자 디지털 대여·구매",c:"약 1만 원",s:1,v:{money:2,sure:5,rule:5,consc:5,social:5,down:5},
+  g:"오늘 바로 보고, 누구와도 조율할 필요 없음",l:"공유보다 몇천 원 더 듦",w:"1만 원대 지출. 같은 재생 오류가 나면 환불 문의",
+  q:"가장 안전한 선택은 가장 ‘재미없는’ 선택이기도 하다. 확실성에 얼마까지 낼 수 있나?"},
+ {n:"이미 구독하는 다른 OTT 확인",c:"구독 중이면 0원",s:1,v:{money:3,sure:1,rule:5,consc:5,social:5,down:5},
+  g:"추가 비용이 없을 수도 있음",l:"제공 여부가 불확실함(JustWatch에 티빙 표시만 있음)",w:"검색에 쓴 시간",
+  q:"확인되지 않은 정보로 계획을 세우는 건 전략일까, 운에 맡기기일까?"},
+ {n:"한 명이 사서 가족 공유 기능 쓰기",c:"약 5천 원 (2명 기준)",s:2,v:{money:4,sure:3,rule:3,consc:3,social:1,down:3},
+  g:"구글·애플 공식 기능이라 계정 비밀번호를 넘기지 않아도 됨",l:"‘가족’이 전제인 기능을 서먹한 멤버와 씀",w:"가족 그룹을 나와도 일정 기간 다른 그룹에 못 들어가고 결제 정보가 얽힘. 어색함",
+  q:"약관이 허용하는 기능을 취지와 다르게 쓰는 것. 소니가 규정의 빈틈을 쓴 것과 같은가?"},
+ {n:"새 계정 만들어 사고 계정 공유",c:"약 5천 원 + 계정 만드는 수고",s:3,v:{money:4,sure:3,rule:1,consc:3,social:1,down:2},
+  g:"내 주 계정은 노출되지 않음. 기프트카드로 결제하면 카드 정보도 안 남음",l:"대부분의 약관이 계정 공유·양도를 금지함. 계정을 만들고 전달하는 수고가 큼",w:"새 기기 로그인으로 계정이 잠겨 못 보고 돈만 냄",
+  q:"피해자가 뚜렷하지 않은 약관 위반은 ‘어긴’ 걸까?"},
+ {n:"DVD·블루레이 사서 우편으로 공유",c:"2만~4만 원대 + 직구 배송비 (추정)",s:1,v:{money:0,sure:0,rule:5,consc:5,social:2,down:4},
+  g:"실물 디스크를 빌려주는 건 합법. 소장 가치",l:"국내 정식 발매 미확인. 직구 배송 1~2주 이상, 플레이어 필요",w:"모임이 끝난 뒤에 도착",
+  q:"규정을 완벽히 지켜도 목표(모임 전 시청)를 놓치면 그건 이긴 걸까?"},
+ {n:"불법 공유",c:"0원",s:3,v:{money:5,sure:3,rule:0,consc:0,social:3,down:1},
+  g:"돈이 들지 않음",l:"저작권 침해. 악성코드, 낮은 화질, 자막 문제",w:"저작권 고소와 합의금. ‘어디까지 어겨도 되나’를 다루는 모임에서 밝히기 곤란함",
+  q:"‘이길 수 있다면 어겨도 된다’에서 이번 판의 ‘승리’는 몇천 원이다. 이 판은 그 입장에서도 할 만한 판인가?"}
+];
+const TAG={1:'<span class="tag t1">규정 준수</span>',2:'<span class="tag t2">빈틈 활용</span>',3:'<span class="tag t3">선 넘음</span>'};
+let W={...PRE[0].w},cur=0;
+const esc=s=>s;
+document.getElementById("presets").innerHTML=PRE.map((p,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===0}">${p.n}</button>`).join("");
+document.getElementById("sliders").innerHTML=DIM.map(d=>`<div class="sl"><label for="w-${d.k}">${d.n} <span>${d.h} · <b id="o-${d.k}"></b></span></label><input id="w-${d.k}" type="range" min="0" max="5" step="1"></div>`).join("");
+function setPreset(i){cur=i;W={...PRE[i].w};document.querySelectorAll("#presets button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.i===i));document.getElementById("pdesc").textContent=PRE[i].d;sync();}
+function sync(){DIM.forEach(d=>{document.getElementById("w-"+d.k).value=W[d.k];document.getElementById("o-"+d.k).textContent=W[d.k];});render();}
+function render(){
+  const tot=DIM.reduce((a,d)=>a+W[d.k]*5,0)||1;
+  const r=O.map(o=>({o,s:DIM.reduce((a,d)=>a+W[d.k]*o.v[d.k],0)/tot*100})).sort((a,b)=>b.s-a.s);
+  document.getElementById("rank").innerHTML=r.map((x,i)=>`<li class="${i===0?"first":""}"><span class="pos">${i+1}</span><div><div class="nm">${x.o.n} ${TAG[x.o.s]}</div><div class="bar"><i style="width:${x.s.toFixed(0)}%"></i></div></div><span class="sc">${x.s.toFixed(0)}</span></li>`).join("");
+}
+document.getElementById("presets").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setPreset(+b.dataset.i)});
+DIM.forEach(d=>document.getElementById("w-"+d.k).addEventListener("input",e=>{W[d.k]=+e.target.value;document.getElementById("o-"+d.k).textContent=W[d.k];document.querySelectorAll("#presets button").forEach(b=>b.setAttribute("aria-pressed","false"));document.getElementById("pdesc").textContent="직접 조정한 나만의 가중치입니다.";render();}));
+const bar=v=>"●".repeat(v)+"○".repeat(5-v);
+document.getElementById("cards").innerHTML=O.map(o=>`<article class="card"><h3>${o.n} ${TAG[o.s]}</h3><p class="cost">1인 비용 · ${o.c}</p><dl><dt>얻는 것</dt><dd>${o.g}</dd><dt>잃는 것</dt><dd>${o.l}</dd><dt>최악</dt><dd>${o.w}</dd></dl><p class="q">${o.q}</p></article>`).join("");
+setPreset(0);
 const fmt=n=>Math.round(n).toLocaleString("ko-KR")+"원";
 const P=document.getElementById("price"),N=document.getElementById("ppl");
 function upd(){const p=+P.value,n=+N.value;document.getElementById("pv").textContent=p.toLocaleString("ko-KR");document.getElementById("nv").textContent=n;document.getElementById("solo").textContent=fmt(p);document.getElementById("share").textContent=fmt(p/n);document.getElementById("save").textContent=fmt(p-p/n);}
