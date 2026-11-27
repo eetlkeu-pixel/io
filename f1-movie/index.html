@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 더 무비 손익 그래프</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE work: 레이스 전략 브리핑, 차분하고 정확하게
+   IDEA F1 피트월 타이밍 화면과 전략 시트. 랩 차트처럼 영화 러닝타임 위에 장면을 찍는다
+   PICTURE 탈레브식 손익 곡선 두 개(취약 vs 안티프래질) + 156분 타임라인 스트립, 아래 장면별 소형 그래프
+   COLOUR 흰 바탕, 아스팔트 잉크 #15151e, F1 레드 #e10600(취약), 피트레인 블루 #0a58ca(안티프래질), 노면 회색
+   TYPE Titillium Web 900 숫자·제목 + Noto Sans KR 본문
+   LAYOUT 상단 제목·결론, 그 아래 큰 곡선과 타임라인 전폭; 장면 카드 3열→2열→1열 */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#101016);--ink:light-dark(#15151e,#ececf2);--mute:light-dark(#5d5d6b,#a3a3b2);--line:light-dark(#dcdce3,#2c2c38);--panel:light-dark(#f4f4f7,#181822);--red:light-dark(#e10600,#ff4d40);--blue:light-dark(#0a58ca,#5b9bff);--track:light-dark(#15151e,#24242f)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans KR","Apple SD Gothic Neo",sans-serif;overflow-x:clip}
+.band{padding:clamp(28px,4vw,56px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.top{background:var(--track);color:#fff;padding-bottom:0}
+.top .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:end}
+h1{font:900 clamp(32px,4.6vw,52px)/1.08 "Titillium Web","Noto Sans KR",sans-serif;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1 b{color:#ff4d40;font-weight:900}
+.lede{margin:14px 0 0;font-size:17px;color:#d6d6e0;max-width:60ch}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#33333f;border:1px solid #33333f}
+.kpi{background:var(--track);padding:14px 16px}
+.kpi strong{display:block;font:900 clamp(28px,3.6vw,40px)/1 "Titillium Web",sans-serif}
+.kpi span{font-size:13px;color:#b9b9c6}
+.kpi.r strong{color:#ff4d40}.kpi.b strong{color:#7fb0ff}
+.kerb{height:10px;margin-top:28px;background:repeating-linear-gradient(90deg,#e10600 0 28px,#fff 28px 56px)}
+h2{font:700 clamp(22px,2.6vw,30px)/1.2 "Titillium Web","Noto Sans KR",sans-serif;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--mute);margin:0 0 20px;font-size:15px}
+.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:stretch}
+.fig{position:relative;min-height:380px;background:var(--panel);border:1px solid var(--line)}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+svg text{font-family:"Noto Sans KR",sans-serif;paint-order:stroke;stroke:var(--panel);stroke-width:4px}
+.legend{display:grid;gap:14px;align-content:start}
+.lg{border-left:4px solid var(--red);padding:4px 0 4px 14px}
+.lg.b{border-color:var(--blue)}
+.lg h3{margin:0;font-size:17px}
+.lg p{margin:4px 0 0;font-size:15px;color:var(--mute)}
+.tl{margin-top:28px}
+.tlbar{position:relative;height:64px;background:var(--track);border-radius:4px;margin-top:10px}
+.tlbar::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px dashed #ffffff40}
+.mk{position:absolute;top:8px;width:30px;height:48px;margin-left:-15px;border-radius:4px;display:grid;place-items:center;font:900 15px "Titillium Web",sans-serif;color:#fff;z-index:1;border:0;cursor:pointer}
+.mk.f{background:var(--red)}.mk.a{background:var(--blue)}
+.mk:focus-visible{outline:3px solid #ffd400;outline-offset:2px}
+.ticks{display:flex;justify-content:space-between;font:600 13px "Titillium Web",sans-serif;color:var(--mute);margin-top:6px}
+.note{font-size:13px;color:var(--mute);margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{border:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;scroll-margin-top:16px}
+.card:target{outline:3px solid #ffd400}
+.ch{display:flex;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+.no{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:4px;color:#fff;font:900 17px "Titillium Web",sans-serif}
+.f .no{background:var(--red)}.a .no{background:var(--blue)}
+.ch h3{margin:0;font-size:16px;line-height:1.3}
+.ch small{display:block;color:var(--mute);font-size:13px;white-space:nowrap}
+.mini{position:relative;height:170px;background:var(--panel)}
+.mini>svg{position:absolute;inset:0;width:100%;height:100%}
+.cb{padding:12px 14px 14px;font-size:15px;display:grid;gap:6px}
+.row{display:grid;grid-template-columns:3.4em minmax(0,1fr);gap:8px}
+.row b{font-size:13px;color:var(--mute);font-weight:700;padding-top:2px}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:1px 8px;border-radius:3px;color:#fff;margin-top:4px;justify-self:start}
+.f .tag{background:var(--red)}.a .tag{background:var(--blue)}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--mute);font-weight:700;border-bottom:2px solid var(--ink)}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.neg{color:var(--red);font-weight:900}.pos{color:var(--blue);font-weight:900}
+.thesis{background:var(--track);color:#fff}
+.thesis p{font:700 clamp(19px,2.2vw,25px)/1.5 "Noto Sans KR",sans-serif;margin:0;max-width:52ch}
+.thesis small{display:block;margin-top:16px;color:#b9b9c6;font-size:13px}
+footer{font-size:13px;color:var(--mute)}
+.art{position:relative;height:150px;overflow:hidden;background:#1d1d27}
+.art>svg{position:absolute;inset:0;width:100%;height:100%}
+.card{cursor:pointer;transition:transform .15s}
+.card:hover{transform:translateY(-2px)}
+.card:focus-visible{outline:3px solid #ffd400;outline-offset:2px}
+.more{font-size:13px;font-weight:700;color:var(--ink);margin-top:6px;text-decoration:underline;text-underline-offset:3px}
+.ov{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.ov.on{display:flex}
+.dlg{background:var(--bg);color:var(--ink);width:min(760px,100%);max-height:calc(100% - 16px);overflow-y:auto;border-radius:6px;box-shadow:0 20px 60px #0006}
+.dlg .art{height:clamp(160px,30vw,240px)}
+.dh{display:flex;gap:12px;align-items:flex-start;padding:16px 18px 6px}
+.dh h3{margin:0;font:700 clamp(20px,2.6vw,26px)/1.25 "Noto Sans KR",sans-serif}
+.dh small{color:var(--mute);font-size:13px}
+.x{margin-left:auto;flex:none;width:44px;height:44px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;font-size:22px;cursor:pointer}
+.x:focus-visible{outline:3px solid #ffd400}
+.db{padding:6px 18px 20px;display:grid;gap:14px}
+.db section h4{margin:0 0 4px;font-size:13px;color:var(--mute);font-weight:700}
+.db section p{margin:0;font-size:16px}
+.db .mini{height:200px;border:1px solid var(--line)}
+.dnav{display:flex;justify-content:space-between;gap:10px;padding:0 18px 18px}
+.dnav button{min-height:44px;padding:0 16px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;font:700 15px "Noto Sans KR",sans-serif;cursor:pointer}
+.dnav button:disabled{opacity:.35;cursor:default}
+@media(max-width:900px){.top .wrap,.hero,.split{grid-template-columns:minmax(0,1fr)}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.grid{grid-template-columns:minmax(0,1fr)}.fig{min-height:300px}.kpi{padding:10px}table{font-size:13px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0;text-align:right}.stack td::before{content:attr(data-l);color:var(--mute);font-size:13px;text-align:left}.mk{width:24px;margin-left:-12px;font-size:13px}}
+@media(prefers-reduced-motion:no-preference){.curve{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 1.4s ease-out forwards}@keyframes draw{to{stroke-dashoffset:0}}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+
+<header class="band top">
+  <div class="wrap">
+    <div>
+      <h1>소니의 '영리한 수'는 대부분 <b>오목한 손익</b>이었다</h1>
+      <p class="lede">『F1 더 무비』 일곱 장면을 나심 탈레브식 손익 그래프로 다시 그렸다. 규칙의 빈틈을 쓴 장면은 자주 이기고 한 번에 무너지는 구조다. 영화가 진짜 승리로 그린 장면은 비용을 스스로 지는 볼록한 구조다.</p>
+    </div>
+    <div class="kpis">
+      <div class="kpi r"><strong>4</strong><span>취약 구조 장면</span></div>
+      <div class="kpi b"><strong>3</strong><span>안티프래질 구조 장면</span></div>
+      <div class="kpi"><strong>156분</strong><span>러닝타임</span></div>
+    </div>
+  </div>
+  <div class="kerb"></div>
+</header>
+
+<section class="band">
+  <div class="wrap">
+    <h2>두 가지 손익 곡선</h2>
+    <p class="sub">가로축은 사건의 크기, 세로축은 손익이다. 평온할 때는 둘이 비슷해 보이고, 큰 사건에서 갈린다.</p>
+    <div class="hero">
+      <div class="fig"><svg id="hero" role="img" aria-label="취약 곡선은 사건이 커질수록 손실이 급격히 커지고, 안티프래질 곡선은 이익이 급격히 커진다"></svg></div>
+      <div class="legend">
+        <div class="lg"><h3>취약 구조</h3><p>평소엔 작은 이익이 꾸준히 쌓인다. 드문 큰 사건 하나가 그동안의 이익과 판 전체를 지운다. 승률은 높고 기대값은 음수가 되기 쉽다.</p></div>
+        <div class="lg b"><h3>안티프래질 구조</h3><p>평소엔 작은 비용을 낸다. 큰 사건이 오면 이익이 비선형으로 커진다. 손실 하단이 막혀 있어 여러 번 시도할 수 있다.</p></div>
+        <div class="lg" style="border-color:var(--mute)"><h3>판정 기준</h3><p>하단에 복구할 수 없는 손실이 있으면 결과와 상관없이 취약으로 분류한다. 결과가 좋았다고 결정이 좋았던 것은 아니다.</p></div>
+      </div>
+    </div>
+
+    <div class="tl">
+      <h2>러닝타임 위의 일곱 장면</h2>
+      <div class="tlbar" id="tl"></div>
+      <div class="ticks"><span>0분</span><span>40분</span><span>80분</span><span>120분</span><span>156분</span></div>
+      <p class="note">시점은 156분 러닝타임과 줄거리 순서로 잡은 근사치다. 상영본과 ±10분 차이가 날 수 있다. 번호를 누르면 장면 상세가 열린다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <h2>장면별 손익 그래프</h2>
+    <p class="sub">곡선 모양만 보면 된다. 끝이 아래로 꺾이면 취약, 위로 꺾이면 안티프래질이다.</p>
+    <div class="grid" id="cards"></div>
+  </div>
+</section>
+
+<section class="band" style="background:var(--panel)">
+  <div class="wrap split">
+    <div>
+      <h2>승률이 높은 쪽이 기대값은 음수다</h2>
+      <p class="sub">점수는 상대 비교용 가정치다. 확률은 영화 서사를 바탕으로 잡았다.</p>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>항목</th><th style="text-align:right">헝가리 충돌</th><th style="text-align:right">전투용 설계</th></tr></thead>
+        <tbody>
+          <tr><td>성공 확률</td><td class="n">95%</td><td class="n">40%</td></tr>
+          <tr><td>성공 시 이득</td><td class="n">+10</td><td class="n">+50</td></tr>
+          <tr><td>실패 시 손실</td><td class="n">−300</td><td class="n">−10</td></tr>
+          <tr><td>기대값</td><td class="n neg">−5.5</td><td class="n pos">+14</td></tr>
+          <tr><td>켈리 최적 비중</td><td class="n">0에 수렴</td><td class="n">엣지에 비례</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="note">헝가리: 0.95×10 − 0.05×300 = −5.5 / 설계: 0.4×50 − 0.6×10 = +14</p>
+    </div>
+    <div>
+      <h2>모임 질문 1의 세 입장</h2>
+      <p class="sub">"규정을 반드시 지킨다 · 어기지 않되 최대한 활용한다 · 이길 수 있다면 어긴다"</p>
+      <div class="scroll">
+      <table class="stack">
+        <thead><tr><th>입장</th><th>곡선</th><th>파산 위험</th><th>장기 생존</th></tr></thead>
+        <tbody>
+          <tr><td>반드시 지킨다</td><td>평평함</td><td>없음</td><td>높음, 기회비용 큼</td></tr>
+          <tr><td>최대한 활용한다</td><td>비용 전가 여부로 갈림</td><td>정의에 따라 다름</td><td>스스로 비용을 지면 최고</td></tr>
+          <tr><td>이기면 어긴다</td><td>오목</td><td>있음</td><td>낮음, 한 번이면 끝</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="note">'최대한 활용'도 둘로 나뉜다. 비용을 내가 지면 전투용 설계형, 남에게 떠넘기면 헝가리형이다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band thesis">
+  <div class="wrap">
+    <p>영리함과 반칙의 차이는 규칙과의 거리가 아니다. 그 이득의 손익 곡선이 오목한지 볼록한지, 그리고 꼬리 손실을 누가 지는지에 있다.</p>
+    <small>현실 대응 사례: 2008 싱가포르 GP '크래시게이트'. 팀 지시로 일부러 사고를 내 세이프티카를 부른 르노는 적발 후 팀 대표가 영구 제명 처분을 받았다. 영화 속 헝가리 수법의 꼬리 손실이 실제로 실현된 경우다.</small>
+  </div>
+</section>
+
+<div class="ov" id="ov" aria-hidden="true">
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dt" id="dlg">
+    <div class="art" id="dart"></div>
+    <div class="dh"><div class="no" id="dno"></div><div><h3 id="dt"></h3><small id="dm"></small></div><button class="x" id="dx" aria-label="닫기">×</button></div>
+    <div class="db" id="db"></div>
+    <div class="dnav"><button id="dprev">← 이전 장면</button><button id="dnext">다음 장면 →</button></div>
+  </div>
+</div>
+
+<footer class="band">
+  <div class="wrap">영화: 『F1 더 무비』(조셉 코신스키, 2025). 줄거리는 공개 시놉시스와 리뷰 기준이다. 손익 수치와 곡선 형태는 해석을 위한 가정이다. 장면 그림은 영화 스틸이 아닌 직접 그린 일러스트다.</div>
+</footer>
+
+<script>
+{
+const S=[
+ {n:1,t:"헝가리 GP: 일부러 충돌해 세이프티카 유도",m:45,k:"f",g:.25,art:"sc",up:"팀 첫 포인트",dn:"페널티, 타인 부상, 적발 시 영구 제명",one:"자주 통하지만 공개되는 순간 끝나는 수법",
+  ctx:"APXGP는 시즌 내내 포인트가 0이다. 남은 경기에서 1승을 못 하면 투자자들이 팀을 판다. 소니와 루키 조슈아의 관계도 틀어져 있다.",
+  what:"소니는 레이스 중 다른 차와 일부러 접촉하고 충돌을 만든다. 세이프티카가 나올 때마다 대열이 뭉치고, 뒤처져 있던 조슈아가 중위권에 붙는다. 조슈아가 팀의 첫 포인트를 딴다.",
+  rule:"규정 문구에 '세이프티카 유도 금지'라는 조항은 없다. 그래서 영화는 이를 빈틈 활용처럼 그린다. 하지만 의도적 충돌은 스포츠 정신 위반으로 처벌되는 영역이다.",
+  pay:"상단은 몇 포인트로 제한된다. 하단에는 다른 드라이버의 부상, 페널티, 적발 시 커리어 종료가 있다. 반복할수록 적발 확률이 쌓이는 오목한 구조다.",
+  real:"2008 싱가포르 GP 크래시게이트. 르노가 팀 지시로 사고를 내 세이프티카를 불렀고, 적발 후 팀 대표가 영구 제명 처분을 받았다.",
+  q:"이 수법이 모두에게 알려진 뒤에도 통할까? 20명 전원이 따라 하면 경기가 성립할까?"},
+ {n:2,t:"케이트와 '전투용' 공력 설계",m:52,k:"a",g:.15,art:"tunnel",up:"시즌 내내 경쟁력, 추격전 우위",dn:"개발비와 시간",one:"규정 안의 혁신. 공개돼도 우위가 남는다",
+  ctx:"헝가리 이후 기술 디렉터 케이트가 소니의 감각을 인정하기 시작한다. 차는 깨끗한 공기에서만 빠르고, 다른 차 뒤에 붙으면 성능이 떨어진다.",
+  what:"소니는 케이트에게 앞차 뒤의 난기류 속에서도 성능이 나는 차, 즉 레이스용 '전투' 차를 요구한다. 풍동과 시뮬레이터로 바닥면과 공력 패키지를 다시 설계한다.",
+  rule:"기술 규정 안에서 해석 폭을 최대한 쓰는 설계다. 누구에게도 비용을 떠넘기지 않는다.",
+  pay:"하단은 개발비와 시간이다. 성공하면 남은 모든 레이스에서 추월 능력이 생긴다. 실패해도 팀이 망하지 않는 볼록한 구조다.",
+  real:"F1 역사에서 규정 해석으로 만든 혁신 설계는 여러 번 있었다. 경쟁팀이 따라 해도 먼저 만든 팀의 학습 우위는 남는다.",
+  q:"내 일에서 '공개돼도 남는 우위'는 무엇인가?"},
+ {n:3,t:"이탈리아 GP: 빗길 슬릭타이어 고집",m:72,k:"f",g:.35,art:"rain",up:"2위 포인트",dn:"대형 사고, 신체 손상",one:"단기 결과는 좋았고 꼬리는 조슈아의 몸에 걸렸다",
+  ctx:"몬차, 젖은 노면이다. 다른 팀들은 빗길 타이어를 고민한다.",
+  what:"소니는 조슈아에게 슬릭타이어로 버티라고 권한다. 도박이 맞아 조슈아가 2위까지 올라간다. 조슈아는 직선까지 기다리라는 조언을 무시하고 베르스타펜을 추월하려다 파라볼리카 코너 연석을 밟는다. 차가 방호벽을 넘어 불길에 휩싸이고, 소니가 그를 꺼낸다.",
+  rule:"규정 위반은 없다. 순수한 위험 감수의 문제다.",
+  pay:"성공 시 2위 포인트, 실패 시 대형 사고다. 그리고 그 꼬리 손실을 결정한 소니가 아니라 조슈아의 몸이 졌다. 조슈아는 세 경기를 결장하고 소니를 탓한다.",
+  real:"",
+  q:"좋은 결과가 나온 고위험 결정은 좋은 결정이었나? 그 손실은 누가 지게 되어 있었나?"},
+ {n:4,t:"포커: 이기는 패를 접는다",m:90,k:"a",g:.12,art:"cards",up:"조슈아의 신뢰와 자신감",dn:"판돈 일부",one:"작은 확정 비용으로 큰 무형자산을 산다",
+  ctx:"조슈아가 복귀한 뒤에도 둘의 갈등은 이어진다. 케이트가 팀원들과 포커 판을 연다.",
+  what:"조슈아가 판을 이긴다. 나중에 소니는 자신이 이기는 패를 일부러 접었다고 밝힌다.",
+  rule:"게임 규칙 안의 선택이다. 상대를 속였지만 손해는 소니 자신이 졌다.",
+  pay:"하단은 판돈 일부로 확정되어 있다. 상단은 루키의 자신감과 팀 내 신뢰다. 작은 비용으로 비선형 이익을 사는 볼록한 구조다.",
+  real:"",
+  q:"단기 이익을 일부러 포기하고 관계를 산 경험이 있는가?"},
+ {n:5,t:"배닝의 익명 제보와 FIA 조치",m:97,k:"f",g:.3,art:"doc",up:"팀 매각 차익",dn:"발각 시 평판과 지위 상실",one:"규정을 무기로 쓴 반칙. 은폐에 전부를 건다",
+  ctx:"팀 성적이 올라가기 시작한다. 이사회 멤버 배닝에게는 이것이 반갑지 않다.",
+  what:"케이트의 바닥면 업그레이드가 외부 도움을 받아 만들어졌다는 익명 제보가 들어간다. FIA가 업그레이드 제거를 명령한다. 나중에 배닝은 소니 영입과 이 제보를 자신이 꾸몄고, 목적은 루벤을 몰아내고 팀을 파는 것이었다고 밝힌다. 소니에게 팀 대표 자리를 제안하지만 소니는 거절한다.",
+  rule:"제보라는 형식은 합법이다. 규정을 지키는 척하면서 규정을 무기로 쓴 경우다.",
+  pay:"성공하면 매각 차익을 얻는다. 모든 것이 은폐에 달려 있고, 드러나면 지위와 평판을 잃는다. 결국 FIA가 케이트의 무혐의를 확인한다.",
+  real:"",
+  q:"소니의 헝가리 수법과 배닝의 제보는 구조적으로 무엇이 다른가? 목적과 감정이입 말고 다른 차이가 있나?"},
+ {n:6,t:"영구 손상 위험을 안고 출전",m:115,k:"f",g:.4,art:"helmet",up:"커리어 첫 우승",dn:"신체 영구 손상",one:"상단은 일회성, 하단은 영구. 가장 논쟁적인 베팅",
+  ctx:"라스베이거스에서 소니가 사고를 낸다. 회복 과정에서 루벤은 1993년 사고의 후유증이 영구적이라는 사실을 알게 된다.",
+  what:"루벤은 안전을 이유로 소니를 해고한다. 마지막 경기를 앞두고 루벤은 결국 소니의 출전을 허락한다.",
+  rule:"규정 문제보다 개인의 몸을 건 선택이다. 팀 오너가 안전 규칙을 스스로 거둬들인 장면이기도 하다.",
+  pay:"상단은 평생 원하던 첫 우승, 한 번뿐인 이익이다. 하단은 되돌릴 수 없는 신체 손상이다. 복구 불가능한 손실이 있으므로 이 페이지 기준으로는 취약 구조로 분류한다.",
+  real:"",
+  q:"내가 비용을 지는 위험이라면 감수해도 되는가? 그 판단을 누가 내려야 하나?"},
+ {n:7,t:"아부다비: 희생으로 길을 연다",m:140,k:"a",g:.2,art:"flag",up:"팀 생존과 우승",dn:"개인 순위",one:"비용을 스스로 진다. 영화가 그린 진짜 승리",
+  ctx:"마지막 경기다. 조슈아는 이탈리아 사고가 소니 탓이 아니었다고 인정한다. FIA가 케이트의 무혐의를 확인해 업그레이드가 돌아온다.",
+  what:"조슈아가 선두를 달리다 닳은 타이어로 밀린다. 소니가 러셀과 충돌하면서 레드 플래그가 나오고, 두 차 모두 새 타이어로 재출발한다. 소니는 해밀턴이 자신을 막도록 압박해 조슈아의 길을 연다. 마지막 랩에 해밀턴과 조슈아가 엉키고, 소니가 첫 우승을 한다. 팀 매각은 무산된다.",
+  rule:"레드 플래그 재출발 규정 안에서 움직인다. 전술의 중심은 자기 순위를 걸고 동료의 길을 여는 것이다.",
+  pay:"하단은 소니 개인의 순위로 막혀 있다. 상단은 팀 생존과 우승이다. 비용을 스스로 지는 볼록한 구조다.",
+  real:"",
+  q:"영화는 왜 결말에서 '영리한 반칙'이 아니라 '희생'을 승리 장면으로 골랐을까?"}
+];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fy=(k,x,g)=>k==="f"?g-(g+1)*x**4:-g+(1+g)*x**4;
+
+document.getElementById("tl").innerHTML=S.map(s=>`<a class="mk ${s.k}" href="#s${s.n}" style="left:${(s.m/156*100).toFixed(2)}%" aria-label="${s.n}번 장면 약 ${s.m}분">${s.n}</a>`).join("");
+
+const car=(x,y,sc,c)=>`<g transform="translate(${x},${y}) scale(${sc})"><ellipse cx="60" cy="30" rx="62" ry="5" fill="#000" opacity=".35"/><path d="M2 22 L14 22 L20 14 L44 12 L54 4 L66 4 L72 12 L100 14 L116 16 L118 24 L2 26 Z" fill="${c}"/><path d="M54 6 L64 6 L68 12 L52 12 Z" fill="#111"/><rect x="0" y="12" width="10" height="12" fill="#222"/><rect x="108" y="20" width="14" height="5" fill="#222"/><circle cx="24" cy="25" r="8" fill="#111"/><circle cx="24" cy="25" r="3" fill="#555"/><circle cx="96" cy="25" r="8" fill="#111"/><circle cx="96" cy="25" r="3" fill="#555"/><path d="M20 15 L100 15" stroke="#fff" stroke-opacity=".35" stroke-width="1.5"/></g>`;
+const ARTS={
+ sc:()=>`<rect width="400" height="150" fill="#3a3a46"/><rect y="70" width="400" height="80" fill="#2a2a33"/><path d="M0 108 H400" stroke="#ffffff55" stroke-width="2" stroke-dasharray="16 14"/>${car(250,74,.9,"#f2b705")}<rect x="285" y="70" width="34" height="5" rx="2" fill="#ffb000"/>${car(150,82,.85,"#e10600")}${car(60,90,.85,"#0a58ca")}${car(-30,82,.85,"#7a7a88")}<text x="300" y="40" font-size="22" font-weight="900" fill="#ffb000" font-family="Titillium Web,sans-serif" text-anchor="middle">SC</text>`,
+ tunnel:()=>{let l="";for(let i=0;i<9;i++){const y=30+i*12;l+=`<path d="M0 ${y} C120 ${y} 160 ${y-(i<5?18:-10)} 400 ${y-(i<5?6:-4)}" fill="none" stroke="#5b9bff" stroke-opacity="${.3+i*.06}" stroke-width="2"/>`}return `<rect width="400" height="150" fill="#14182a"/>${l}${car(130,78,1.2,"#e8e8ee")}<rect x="20" y="20" width="360" height="110" fill="none" stroke="#ffffff22"/>`},
+ rain:()=>{let r="";let s=7;for(let i=0;i<70;i++){s=s*16807%2147483647;const x=s%400;s=s*16807%2147483647;const y=s%150;r+=`<path d="M${x} ${y} l-6 14" stroke="#cfe3ff" stroke-opacity=".5" stroke-width="1.5"/>`}return `<rect width="400" height="150" fill="#3b4656"/><path d="M0 150 C120 60 260 60 400 100 L400 150 Z" fill="#26303c"/><path d="M60 150 C160 80 280 80 400 112" fill="none" stroke="#e10600" stroke-width="8" stroke-dasharray="14 14"/>${car(170,70,1,"#0a58ca")}<path d="M160 98 q-40 -6 -80 4" stroke="#cfe3ff" stroke-opacity=".5" stroke-width="10" fill="none" stroke-linecap="round"/>${r}`},
+ cards:()=>`<rect width="400" height="150" fill="#0d5a3c"/><ellipse cx="200" cy="160" rx="260" ry="70" fill="#0a4a31"/>${[-24,-8,8,24].map((a,i)=>`<g transform="translate(200,120) rotate(${a})"><rect x="-26" y="-92" width="52" height="74" rx="5" fill="#fbfbf7" stroke="#bbb"/><text x="0" y="-48" font-size="26" text-anchor="middle" fill="${i%2?"#e10600":"#15151e"}" font-family="serif">${["A","K","Q","J"][i]}</text></g>`).join("")}<g transform="translate(70,112)"><ellipse rx="22" ry="8" fill="#e10600"/><ellipse cy="-6" rx="22" ry="8" fill="#0a58ca"/><ellipse cy="-12" rx="22" ry="8" fill="#f2f2f2"/></g><text x="330" y="70" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">FOLD</text>`,
+ doc:()=>`<rect width="400" height="150" fill="#2b2b36"/><g transform="rotate(-6 200 75)"><rect x="130" y="18" width="140" height="120" fill="#f4f4ef"/>${[0,1,2,3,4,5].map(i=>`<rect x="146" y="${36+i*14}" width="${i==5?60:108}" height="5" fill="#9a9aa6"/>`).join("")}<g transform="translate(232,104) rotate(-14)"><rect x="-38" y="-14" width="76" height="28" fill="none" stroke="#e10600" stroke-width="3"/><text y="6" font-size="15" font-weight="900" fill="#e10600" text-anchor="middle" font-family="Titillium Web,sans-serif">REMOVE</text></g></g><path d="M40 120 L90 90 L120 110" fill="none" stroke="#ffffff44" stroke-width="2"/><circle cx="330" cy="50" r="22" fill="#15151e" stroke="#ffffff33"/><text x="330" y="57" font-size="22" text-anchor="middle" fill="#fff">?</text>`,
+ helmet:()=>`<rect width="400" height="150" fill="#1d1d27"/><path d="M0 110 L60 110 L80 70 L100 130 L120 110 L400 110" fill="none" stroke="#e10600" stroke-width="3"/><g transform="translate(200,78)"><ellipse cy="52" rx="70" ry="8" fill="#000" opacity=".4"/><path d="M-60 30 C-62 -40 60 -50 64 10 L64 40 L-50 44 Z" fill="#f2f2f5"/><path d="M-10 -6 L60 -2 L62 22 L-6 22 Z" fill="#15151e"/><path d="M-58 20 L-10 20" stroke="#e10600" stroke-width="6"/><path d="M-20 -30 l8 14 l-6 6 l10 12" stroke="#15151e" stroke-width="2" fill="none"/></g>`,
+ flag:()=>{let c="";for(let r=0;r<5;r++)for(let k=0;k<8;k++)if((r+k)%2)c+=`<rect x="${k*14}" y="${r*14}" width="14" height="14" fill="#15151e"/>`;return `<rect width="400" height="150" fill="#2a3448"/><rect y="96" width="400" height="54" fill="#22222b"/><path d="M0 120 H400" stroke="#fff" stroke-opacity=".3" stroke-dasharray="20 14" stroke-width="2"/>${car(210,94,.9,"#e10600")}${car(70,104,.9,"#0a58ca")}<g transform="translate(46,14) rotate(-8)"><rect width="112" height="70" fill="#fff"/>${c}</g><rect x="40" y="10" width="4" height="100" fill="#ccc"/>`}
+};
+const art=k=>`<svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${ARTS[k]()}</svg>`;
+
+document.getElementById("cards").innerHTML=S.map(s=>`<article class="card ${s.k}" id="s${s.n}" tabindex="0" role="button" aria-label="${s.n}번 장면 상세 보기">
+ <div class="art">${art(s.art)}</div>
+ <div class="ch"><div class="no">${s.n}</div><div><h3>${esc(s.t)}</h3><small>약 ${s.m}분 지점</small></div></div>
+ <div class="mini"><svg data-i="${s.n-1}" role="img" aria-label="${s.k==="f"?"오목한 취약 곡선":"볼록한 안티프래질 곡선"}"></svg></div>
+ <div class="cb">
+  <div class="row"><b>상단</b><span>${esc(s.up)}</span></div>
+  <div class="row"><b>하단</b><span>${esc(s.dn)}</span></div>
+  <div class="row"><b>한 줄</b><span>${esc(s.one)}</span></div>
+  <span class="tag">${s.k==="f"?"취약 구조":"안티프래질 구조"}</span>
+  <span class="more">눌러서 장면 자세히 보기</span>
+ </div></article>`).join("");
+
+const path=(k,g,W,H,pl,pr,pt,pb)=>{
+  const iw=W-pl-pr,ih=H-pt-pb,y0=pt+ih/2;let d="";
+  for(let i=0;i<=60;i++){const x=i/60,y=fy(k,x,g);d+=(i?"L":"M")+(pl+x*iw).toFixed(1)+","+(y0-y*ih/2).toFixed(1);}
+  return d;
+};
+
+const hero=document.getElementById("hero");
+const drawHero=()=>{
+  const W=hero.clientWidth,H=hero.clientHeight,small=W<520;
+  const pl=small?30:44,pr=small?16:28,pt=28,pb=40,iw=W-pl-pr,ih=H-pt-pb,y0=pt+ih/2;
+  const fp=path("f",.22,W,H,pl,pr,pt,pb),ap=path("a",.22,W,H,pl,pr,pt,pb);
+  const yF=y0-fy("f",1,.22)*ih/2,yA=y0-fy("a",1,.22)*ih/2;
+  hero.innerHTML=`
+  <line x1="${pl}" y1="${y0}" x2="${W-pr}" y2="${y0}" stroke="var(--mute)" stroke-width="1"/>
+  <line x1="${pl}" y1="${pt}" x2="${pl}" y2="${H-pb}" stroke="var(--mute)" stroke-width="1"/>
+  <text x="${pl+6}" y="${pt+4}" font-size="13" fill="var(--mute)">이익</text>
+  <text x="${pl+6}" y="${H-pb-6}" font-size="13" fill="var(--mute)">손실</text>
+  <text x="${W-pr}" y="${H-14}" font-size="13" fill="var(--mute)" text-anchor="end">사건의 크기 →</text>
+  <text x="${pl}" y="${H-14}" font-size="13" fill="var(--mute)">평온</text>
+  <rect x="${pl+iw*.72}" y="${pt}" width="${iw*.28}" height="${ih}" fill="var(--ink)" opacity=".05"/>
+  <text x="${pl+iw*.86}" y="${y0-8}" font-size="13" fill="var(--mute)" text-anchor="middle">${small?"꼬리":"꼬리 사건"}</text>
+  <path class="curve" d="${fp}" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round"/>
+  <path class="curve" d="${ap}" fill="none" stroke="var(--blue)" stroke-width="4" stroke-linecap="round"/>
+  <text x="${pl+iw*.62}" y="${yA+18}" font-size="${small?13:15}" font-weight="700" fill="var(--blue)" text-anchor="end">안티프래질</text>
+  <text x="${pl+iw*.62}" y="${yF-8}" font-size="${small?13:15}" font-weight="700" fill="var(--red)" text-anchor="end">취약</text>
+  <text x="${pl+iw*.2}" y="${y0-ih*.16}" font-size="13" fill="var(--mute)">${small?"":"평소엔 둘이 비슷하다"}</text>`;
+};
+const roH=new ResizeObserver(drawHero);roH.observe(hero);
+
+const minis=[...document.querySelectorAll(".mini svg")];
+const drawMini=s=>{
+  const d=S[+s.dataset.i],W=s.clientWidth,H=s.clientHeight,pl=14,pr=14,pt=16,pb=16,y0=pt+(H-pt-pb)/2;
+  const c=d.k==="f"?"var(--red)":"var(--blue)",p=path(d.k,d.g,W,H,pl,pr,pt,pb);
+  const lab=d.k==="f"?"꼬리 손실":"꼬리 이익",ly=d.k==="f"?H-pb-4:pt+12;
+  s.innerHTML=`<line x1="${pl}" y1="${y0}" x2="${W-pr}" y2="${y0}" stroke="var(--line)" stroke-width="1.5"/>
+  <path d="${p}" fill="none" stroke="${c}" stroke-width="3.5" stroke-linecap="round"/>
+  <text x="${pl+4}" y="${y0-8}" font-size="13" fill="var(--mute)">평소 ${d.k==="f"?"+":"−"}</text>
+  <text x="${W-pr-30}" y="${ly}" font-size="13" font-weight="700" fill="${c}" text-anchor="end">${lab}</text>`;
+};
+const roM=new ResizeObserver(es=>es.forEach(e=>drawMini(e.target)));minis.forEach(m=>roM.observe(m));
+
+const ov=document.getElementById("ov"),dlg=document.getElementById("dlg");
+let cur=-1,last=null;
+const open=i=>{
+  const s=S[i];cur=i;
+  dlg.className="dlg "+s.k;
+  document.getElementById("dart").innerHTML=art(s.art);
+  document.getElementById("dno").textContent=s.n;
+  document.getElementById("dt").textContent=s.t;
+  document.getElementById("dm").textContent=`약 ${s.m}분 지점 · ${s.k==="f"?"취약 구조":"안티프래질 구조"}`;
+  const sec=(h,p)=>p?`<section><h4>${h}</h4><p>${esc(p)}</p></section>`:"";
+  document.getElementById("db").innerHTML=sec("상황",s.ctx)+sec("어떤 장면인가",s.what)+`<div class="mini"><svg data-i="${i}" role="img" aria-label="손익 곡선"></svg></div>`+sec("규칙 관점",s.rule)+sec("손익 해석",s.pay)+sec("얻는 것",s.up)+sec("잃을 수 있는 것",s.dn)+sec("현실 대응 사례",s.real)+sec("모임에서 던질 질문",s.q);
+  ov.classList.add("on");ov.setAttribute("aria-hidden","false");
+  const m=dlg.querySelector(".mini svg");requestAnimationFrame(()=>drawMini(m));
+  document.getElementById("dprev").disabled=i===0;
+  document.getElementById("dnext").disabled=i===S.length-1;
+  dlg.scrollTop=0;document.getElementById("dx").focus();
+};
+const close=()=>{ov.classList.remove("on");ov.setAttribute("aria-hidden","true");cur=-1;if(last)last.focus();};
+document.querySelectorAll(".card").forEach((c,i)=>{
+  c.addEventListener("click",()=>{last=c;open(i)});
+  c.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();last=c;open(i)}});
+});
+document.querySelectorAll(".mk").forEach((m,i)=>m.addEventListener("click",e=>{e.preventDefault();last=m;open(i)}));
+document.getElementById("dx").addEventListener("click",close);
+document.getElementById("dprev").addEventListener("click",()=>cur>0&&open(cur-1));
+document.getElementById("dnext").addEventListener("click",()=>cur<S.length-1&&open(cur+1));
+ov.addEventListener("click",e=>{if(e.target===ov)close()});
+document.addEventListener("keydown",e=>{if(cur<0)return;if(e.key==="Escape")close();if(e.key==="ArrowRight"&&cur<S.length-1)open(cur+1);if(e.key==="ArrowLeft"&&cur>0)open(cur-1);});
+}
+</script>
+</body>
+</html>
